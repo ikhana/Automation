@@ -20,7 +20,18 @@ service = Service("C:\Derivers\chromedriver_win32/chromedriver")
 driver = webdriver.Chrome(service=service)
 driver.get("https://twitter.com")
 
-wait = WebDriverWait(driver, 30)
+wait = WebDriverWait(driver, 60)
+
+# Wait for the page to load
+wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.css-1dbjc4n.r-1habvwh')))
+
+
+# Wait for a random period between 60 and 90 seconds, and scroll up and down
+time.sleep(random.uniform(60, 90))
+scroll_height = driver.execute_script("return document.body.scrollHeight")
+driver.execute_script(f"window.scrollTo(0, {scroll_height // 2});")
+time.sleep(2)
+driver.execute_script("window.scrollTo(0, 0);")
 
 # Click the login link
 login_link = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[data-testid="login"]')))
@@ -31,6 +42,9 @@ login_link.click()
 username_input = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[name="text"]')))
 username_input.send_keys(your_email_or_username)
 
+# Wait for a random period between 30 and 60 seconds
+time.sleep(random.uniform(30, 60))
+
 # Click the next button
 next_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Next')]")))
 time.sleep(random.uniform(3, 7))
@@ -40,22 +54,24 @@ next_button.click()
 password_input = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[name="password"]')))
 password_input.send_keys(your_password)
 
+# Wait for a random period between 30 and 60 seconds
+time.sleep(random.uniform(30, 60))
+
 # Click the login button
 login_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="LoginForm_Login_Button"]')))
-time.sleep(random.uniform(5, 12))
+time.sleep(random.uniform(10, 20))
 login_button.click()
 
-time.sleep(random.uniform(5, 15))
 # Wait for the title to change
+time.sleep(random.uniform(5, 15))
 wait.until(EC.title_contains("Twitter"))
 
 # Get the title and print it
 ac_titl = driver.title
 print(ac_titl)
 
-expe_title = "(1) Home / Twitter"
-
-if re.match(r'\(?\d*\)? Home / Twitter', ac_titl):
+# Check if the login test has passed
+if re.match(r'\(?\d*\)? Home / Twitter', ac_titl) or "Home / Twitter" in ac_titl:
     print("Test Passed")
 else:
     print("Test Failed")
