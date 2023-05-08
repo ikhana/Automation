@@ -10,6 +10,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.keys import Keys
+
 load_dotenv()
 
 your_email_or_username = os.getenv("TWITTER_USERNAME")
@@ -24,7 +26,6 @@ wait = WebDriverWait(driver, 60)
 
 # Wait for the page to load
 wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.css-1dbjc4n.r-1habvwh')))
-
 
 # Wait for a random period between 60 and 90 seconds, and scroll up and down
 time.sleep(random.uniform(60, 90))
@@ -76,20 +77,46 @@ if re.match(r'\(?\d*\)? Home / Twitter', ac_titl) or "Home / Twitter" in ac_titl
 else:
     print("Test Failed")
 
-specific_account = "MediaCellPPP"  # Replace with the desired account's username
-driver.get(f"https://twitter.com/{specific_account}")
+# Wait for a random period between 120 and 180 seconds, and scroll up and down
+time.sleep(random.uniform(120, 180))
+scroll_height = driver.execute_script("return document.body.scrollHeight")
+driver.execute_script(f"window.scrollTo(0, {scroll_height // 2});")
+time.sleep(2)
+driver.execute_script("window.scrollTo(0, 0);")
 
-def scroll_down(driver):
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(3)
+# ... (previous code remains the same)
+
+# Search for desired topics
+search_terms = ["NFT", "Metaverse"]
+search_query = " OR ".join(search_terms)
+search_box = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[data-testid="SearchBox_Search_Input"]')))
+search_box.send_keys(search_query)
+search_box.send_keys(Keys.ENTER)
+
+# Click on the 'People' tab
+people_tab = wait.until(EC.visibility_of_element_located((By.XPATH, '//a[contains(@href, "f=user")]/div/div/span[contains(text(), "People")]')))
+people_tab.click()
+
+wait.until(EC.visibility_of_element_located((By.XPATH, '//a[contains(@href, "f=user")]/div/div/span[contains(text(), "People")]')))
+
+
+# Locate the follow buttons
+follow_buttons = wait.until(EC.visibility_of_all_elements_located((By.XPATH, '//div[@role="listbox"]//div[@data-testid="follow"]')))
+
+# ... (continue with the rest of the code)
 
 activity_duration = 2 * 60 * 60  # 2 hours
 end_time = time.time() + activity_duration
 
 num_likes = random.randint(20, 30)
 num_retweets = random.randint(20, 30)
+num_follows = random.randint(20, 30)
 
 actions = ActionChains(driver)
+
+def scroll_down(driver):
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
 
 while time.time() < end_time:
     for _ in range(5):
@@ -97,6 +124,7 @@ while time.time() < end_time:
 
     like_buttons = driver.find_elements(By.XPATH, '//div[@data-testid="like"]')
     retweet_buttons = driver.find_elements(By.XPATH, '//div[@data-testid="retweet"]')
+    follow_buttons = driver.find_elements(By.XPATH, '//div[@data-testid="follow"]')
 
     # Like tweets
     for _ in range(num_likes):
@@ -114,4 +142,11 @@ while time.time() < end_time:
         confirm_retweet_button.click()      
         time.sleep(random.uniform(30, 180))
 
+    # Follow accounts
+    for _ in range(num_follows):
+        account_index = random.randint(0, len(follow_buttons) - 1)
+        actions.move_to_element(follow_buttons[account_index]).click().perform()
+        time.sleep(random.uniform(30, 180))
+
 driver.quit()
+
