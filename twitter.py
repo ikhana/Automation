@@ -22,13 +22,13 @@ service = Service("C:\Derivers\chromedriver_win32/chromedriver")
 driver = webdriver.Chrome(service=service)
 driver.get("https://twitter.com")
 
-wait = WebDriverWait(driver, 60)
+wait = WebDriverWait(driver, 10)
 
 # Wait for the page to load
 wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.css-1dbjc4n.r-1habvwh')))
 
 # Wait for a random period between 60 and 90 seconds, and scroll up and down
-time.sleep(random.uniform(60, 90))
+time.sleep(random.uniform(5, 10))
 scroll_height = driver.execute_script("return document.body.scrollHeight")
 driver.execute_script(f"window.scrollTo(0, {scroll_height // 2});")
 time.sleep(2)
@@ -44,7 +44,7 @@ username_input = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, '
 username_input.send_keys(your_email_or_username)
 
 # Wait for a random period between 30 and 60 seconds
-time.sleep(random.uniform(30, 60))
+time.sleep(random.uniform(10, 15))
 
 # Click the next button
 next_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Next')]")))
@@ -56,11 +56,11 @@ password_input = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, '
 password_input.send_keys(your_password)
 
 # Wait for a random period between 30 and 60 seconds
-time.sleep(random.uniform(30, 60))
+time.sleep(random.uniform(10, 15))
 
 # Click the login button
 login_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="LoginForm_Login_Button"]')))
-time.sleep(random.uniform(10, 20))
+time.sleep(random.uniform(10, 15))
 login_button.click()
 
 # Wait for the title to change
@@ -78,7 +78,7 @@ else:
     print("Test Failed")
 
 # Wait for a random period between 120 and 180 seconds, and scroll up and down
-time.sleep(random.uniform(120, 180))
+time.sleep(random.uniform(10, 15))
 scroll_height = driver.execute_script("return document.body.scrollHeight")
 driver.execute_script(f"window.scrollTo(0, {scroll_height // 2});")
 time.sleep(2)
@@ -87,66 +87,41 @@ driver.execute_script("window.scrollTo(0, 0);")
 # ... (previous code remains the same)
 
 # Search for desired topics
-search_terms = ["NFT", "Metaverse"]
-search_query = " OR ".join(search_terms)
+search_terms = ["NFT", ]
+search_query = " NFT "
 search_box = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[data-testid="SearchBox_Search_Input"]')))
 search_box.send_keys(search_query)
 search_box.send_keys(Keys.ENTER)
+time.sleep(10)
 
-# Click on the 'People' tab
-people_tab = wait.until(EC.visibility_of_element_located((By.XPATH, '//a[contains(@href, "f=user")]/div/div/span[contains(text(), "People")]')))
-people_tab.click()
-
-wait.until(EC.visibility_of_element_located((By.XPATH, '//a[contains(@href, "f=user")]/div/div/span[contains(text(), "People")]')))
-
-
-# Locate the follow buttons
-follow_buttons = wait.until(EC.visibility_of_all_elements_located((By.XPATH, '//div[@role="listbox"]//div[@data-testid="follow"]')))
-
-# ... (continue with the rest of the code)
-
-activity_duration = 2 * 60 * 60  # 2 hours
-end_time = time.time() + activity_duration
-
-num_likes = random.randint(20, 30)
-num_retweets = random.randint(20, 30)
-num_follows = random.randint(20, 30)
-
-actions = ActionChains(driver)
 
 def scroll_down(driver):
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(3)
+## Click on the 'People' tab
+people_tab = wait.until(EC.visibility_of_element_located((By.XPATH, '//a[contains(@href, "f=user")]/div/div/span[contains(text(), "People")]')))
+people_tab.click()
 
-while time.time() < end_time:
-    for _ in range(5):
-        scroll_down(driver)
+# Wait for the search results to load
+wait.until(EC.visibility_of_all_elements_located((By.XPATH, '//div[@aria-describedby]')))
 
-    like_buttons = driver.find_elements(By.XPATH, '//div[@data-testid="like"]')
-    retweet_buttons = driver.find_elements(By.XPATH, '//div[@data-testid="retweet"]')
-    follow_buttons = driver.find_elements(By.XPATH, '//div[@data-testid="follow"]')
+# Get a list of all the elements with 'aria-describedby' attribute
+follow_buttons = driver.find_elements(By.XPATH, '//div[@aria-describedby]')
 
-    # Like tweets
-    for _ in range(num_likes):
-        tweet_index = random.randint(0, len(like_buttons) - 1)
-        actions.move_to_element(like_buttons[tweet_index]).click().perform()
-        time.sleep(random.uniform(30, 180))
+# Locate the 'a' tags corresponding to each follow button
+profiles = wait.until(EC.visibility_of_all_elements_located((By.XPATH, '//span[contains(text(), "OpenSea")]/ancestor::a | //span[contains(text(), "Bitcoin AI")]/ancestor::a')))
 
-    # Retweet tweets
-    for _ in range(num_retweets):
-        tweet_index = random.randint(0, len(retweet_buttons) - 1)
-        actions.move_to_element(retweet_buttons[tweet_index]).click().perform()
 
-        # Confirm retweet
-        confirm_retweet_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@data-testid="retweetConfirm"]')))
-        confirm_retweet_button.click()      
-        time.sleep(random.uniform(30, 180))
 
-    # Follow accounts
-    for _ in range(num_follows):
-        account_index = random.randint(0, len(follow_buttons) - 1)
-        actions.move_to_element(follow_buttons[account_index]).click().perform()
-        time.sleep(random.uniform(30, 180))
+# Choose a random profile and click on it
+random_profile = random.choice(profiles)
+random_profile.click()
+
+# Wait for the profile page to load
+wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[data-testid="primaryColumn"]')))
+
+time.sleep(20)
+
 
 driver.quit()
 
