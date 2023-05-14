@@ -20,7 +20,7 @@ load_dotenv()
 
 your_email_or_username = os.getenv("TWITTER_USERNAME")
 your_password = os.getenv("TWITTER_PASSWORD")
-openai.api_key = ''
+openai.api_key = os.getenv("OPEN_AIAPI")
 
 service = Service("C:\Derivers\chromedriver_win32/chromedriver")
 
@@ -93,8 +93,9 @@ driver.execute_script("window.scrollTo(0, 0);")
 
 # Search for desired topics
 search_terms = ["NFT", ]
-search_query = " NFT "
+search_query = "META "
 search_box = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[data-testid="SearchBox_Search_Input"]')))
+time.sleep(10)
 search_box.send_keys(search_query)
 search_box.send_keys(Keys.ENTER)
 time.sleep(10)
@@ -112,36 +113,45 @@ wait.until(EC.visibility_of_all_elements_located((By.XPATH, '//div[@aria-describ
 
 # Get a list of all the elements with 'aria-describedby' attribute
 follow_buttons = driver.find_elements(By.XPATH, '//div[@aria-describedby]')
+# Increase the timeout period to 20 seconds
+wait = WebDriverWait(driver, 20)
 
-# Wait until at least one profile link is visible
-wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'a[role="link"][href^="/"]')))
+# Use presence_of_element_located() instead of visibility_of_element_located()
+wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[role="link"][href^="/"]')))
+time.sleep(10)
 
 # Get all profile links
 profile_links = driver.find_elements(By.CSS_SELECTOR, 'a[role="link"][href^="/"]')
+time.sleep(10)
 
 # Choose a random profile and click on it
 random_profile = random.choice(profile_links)
 random_profile.click()
+time.sleep(10)
 
 # Wait for the profile page to load
 wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[data-testid="primaryColumn"]')))
 
 # Wait for the page to load
 time.sleep(5)
+time.sleep(10)
 
 # Click on the 'Tweets' tab
 wait.until(EC.element_to_be_clickable((By.LINK_TEXT, 'Tweets'))).click()
 
 # Wait for the tweets to load
 time.sleep(5)
+time.sleep(10)
 
 # Retrieve all tweet texts
 tweet_texts = wait.until(EC.visibility_of_all_elements_located((By.XPATH, '//div[@data-testid="tweetText"]')))
+time.sleep(10)
 
 # Make sure to check if any tweets were found
 if len(tweet_texts) > 0:
     # Select a random tweet text
     random_tweet_text = random.choice(tweet_texts)
+    time.sleep(10)
 
     # Print the tweet text
     print(random_tweet_text.text)
@@ -177,32 +187,40 @@ print(f"Reply: {reply}")
 
 # Locate the 'Reply' button of the tweet
 reply_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@data-testid="reply"]')))
+time.sleep(10)
 time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
 reply_button.click()
 
 # Wait for the reply box to appear
 wait.until(EC.presence_of_element_located((By.XPATH, '//div[@data-testid="tweetTextarea_0RichTextInputContainer"]')))
 time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
+time.sleep(10)
 
 reply_box = None
 # Wait until the reply box is visible
 for _ in range(10):  # Retry up to 10 times
     try:
         reply_box = wait.until(EC.visibility_of_element_located((By.XPATH, '//div[@role="textbox"]')))
+        time.sleep(10)
         break  # If successful, break out of the loop
     except TimeoutException:
         time.sleep(2)  # If not, wait for 2 seconds and then try again
+        time.sleep(10)
 
 if reply_box is None:
     print("Couldn't find the reply box.")
 else:
     # Enter the reply text
     time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
+
     reply_box.send_keys(reply)
+    time.sleep(10)
 try:
     wait = WebDriverWait(driver, 10)
     send_reply_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@data-testid="tweetButton"]')))
+    time.sleep(10)
     send_reply_button.click()
+    time.sleep(10)
 except TimeoutException:
     print("The reply button isn't available or clickable at the moment.")
 
@@ -211,4 +229,3 @@ time.sleep(random.uniform(10, 15))  # Random pause for human-like behavior
 
 
 driver.quit()
-
