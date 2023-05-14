@@ -116,9 +116,17 @@ follow_buttons = driver.find_elements(By.XPATH, '//div[@aria-describedby]')
 # Increase the timeout period to 20 seconds
 wait = WebDriverWait(driver, 20)
 
+
 # Use presence_of_element_located() instead of visibility_of_element_located()
 wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[role="link"][href^="/"]')))
 time.sleep(10)
+
+# Increase the timeout period to 20 seconds
+wait = WebDriverWait(driver, 20)
+
+# Use presence_of_element_located() instead of visibility_of_element_located()
+wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[role="link"][href^="/"]')))
+
 
 # Get all profile links
 profile_links = driver.find_elements(By.CSS_SELECTOR, 'a[role="link"][href^="/"]')
