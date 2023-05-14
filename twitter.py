@@ -113,8 +113,11 @@ wait.until(EC.visibility_of_all_elements_located((By.XPATH, '//div[@aria-describ
 # Get a list of all the elements with 'aria-describedby' attribute
 follow_buttons = driver.find_elements(By.XPATH, '//div[@aria-describedby]')
 
-# Wait until at least one profile link is visible
-wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'a[role="link"][href^="/"]')))
+# Increase the timeout period to 20 seconds
+wait = WebDriverWait(driver, 20)
+
+# Use presence_of_element_located() instead of visibility_of_element_located()
+wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[role="link"][href^="/"]')))
 
 # Get all profile links
 profile_links = driver.find_elements(By.CSS_SELECTOR, 'a[role="link"][href^="/"]')
