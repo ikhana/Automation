@@ -93,7 +93,7 @@ driver.execute_script("window.scrollTo(0, 0);")
 
 # Search for desired topics
 search_terms = ["NFT", ]
-search_query = "META "
+search_query = "crypto"
 search_box = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[data-testid="SearchBox_Search_Input"]')))
 time.sleep(10)
 search_box.send_keys(search_query)
@@ -151,6 +151,8 @@ wait.until(EC.element_to_be_clickable((By.LINK_TEXT, 'Tweets'))).click()
 time.sleep(5)
 time.sleep(10)
 
+# ...
+
 # Retrieve all tweet texts
 tweet_texts = wait.until(EC.visibility_of_all_elements_located((By.XPATH, '//div[@data-testid="tweetText"]')))
 time.sleep(10)
@@ -165,12 +167,45 @@ if len(tweet_texts) > 0:
     print(random_tweet_text.text)
 else:
     print("No tweets found.")
+
 # Select a random tweet text
 random_tweet_text = random.choice(tweet_texts)
 
 # Print the tweet text
 tweet_text = random_tweet_text.text
 print(tweet_text)
+
+# Liking a tweet
+try:
+    like_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="like"]')))
+    time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
+    like_button.click()
+    print("Tweet liked.")
+    time.sleep(random.uniform(5, 10))  # Random pause for human-like behavior
+except TimeoutException:
+    print("The like button isn't available or clickable at the moment.")
+
+# Retweeting a tweet
+try:
+    retweet_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="retweet"]')))
+    time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
+    retweet_button.click()
+
+    # Wait for the pop-up menu to appear
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[data-testid="Dropdown"]')))
+
+    # Click on the "Retweet" option
+    retweet_option = wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Retweet"]')))
+    retweet_option.click()
+
+    print("Tweet retweeted.")
+    time.sleep(random.uniform(5, 10))  # Random pause for human-like behavior
+except TimeoutException:
+    print("The retweet button isn't available or clickable at the moment.")
+
+
+# ... (continue with GPT-3 sentiment analysis and replying to the tweet)
+
 
 # Ask GPT-3 to perform sentiment analysis
 prompt = f"Analyze the sentiment of the following tweet: \"{tweet_text}\"."
