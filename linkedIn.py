@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-your_email_or_username = os.getenv("LINKEDIN_USERNAME")
+your_email_or_username = os.getenv("")
 your_password = os.getenv("LNIKEDIN_PASSWORD")
 
 service = Service("C:\Derivers\chromedriver_win32/chromedriver")
