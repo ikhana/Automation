@@ -16,6 +16,7 @@ from selenium.common.exceptions import TimeoutException
 from tweet_analysis import analyze_and_reply
 from tweet_actions import like_tweet, retweet, reply_to_tweet
 from twitter_login import login_to_twitter
+from twitter_search import twitter_search
 
 
 
@@ -49,6 +50,11 @@ driver.execute_script("window.scrollTo(0, 0);")
 
 
 
+# Search terms
+
+search_terms = ["NFT", "Crypto", "Bitcoin", "Ethereum", "Blockchain", "DeFi", "AI", "ML", "Data Science", "Big Data", "Cloud Computing", "Cybersecurity", "IoT", "AR", "VR", "3D Printing", "Quantum Computing", "Robotics", "Drones", "Autonomous Vehicles", "Wireless Technology", "Edge Computing", "Nanotechnology", "Biotechnology", "Green Energy", "Space Technology", "Smart Cities", "Digital Marketing", "FinTech", "HealthTech", "AgriTech", "Gaming"]
+
+tweet_text = twitter_search(driver, search_terms)
 
 
 
