@@ -20,7 +20,6 @@ load_dotenv()
 
 your_email_or_username = os.getenv("TWITTER_USERNAME")
 your_password = os.getenv("TWITTER_PASSWORD")
-openai.api_key = os.getenv("OPEN_AIAPI")
 
 service = Service("C:\Derivers\chromedriver_win32/chromedriver")
 
@@ -30,7 +29,12 @@ driver.get("https://twitter.com")
 wait = WebDriverWait(driver,30)
 
 # Wait for the page to load
-wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.css-1dbjc4n.r-1habvwh')))
+try:
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.css-1dbjc4n.r-1habvwh')))
+except TimeoutException:
+    print("Page load timeout. Try again later.")
+    driver.quit()
+    sys.exit()
 
 # Wait for a random period between 60 and 90 seconds, and scroll up and down
 time.sleep(random.uniform(5, 10))
@@ -40,37 +44,67 @@ time.sleep(2)
 driver.execute_script("window.scrollTo(0, 0);")
 
 # Click the login link
-login_link = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[data-testid="login"]')))
-time.sleep(random.uniform(5, 15))
-login_link.click()
+try:
+    login_link = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[data-testid="login"]')))
+    time.sleep(random.uniform(5, 15))
+    login_link.click()
+except TimeoutException:
+    print("Cannot locate login link. Try again later.")
+    driver.quit()
+    sys.exit()
 
 # Fill in username
-username_input = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[name="text"]')))
-username_input.send_keys(your_email_or_username)
+try:
+    username_input = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[name="text"]')))
+    username_input.send_keys(your_email_or_username)
+except TimeoutException:
+    print("Cannot locate username input. Try again later.")
+    driver.quit()
+    sys.exit()
 
 # Wait for a random period between 30 and 60 seconds
 time.sleep(random.uniform(10, 15))
 
 # Click the next button
-next_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Next')]")))
-time.sleep(random.uniform(3, 7))
-next_button.click()
+try:
+    next_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Next')]")))
+    time.sleep(random.uniform(3, 7))
+    next_button.click()
+except TimeoutException:
+    print("Cannot locate next button. Try again later.")
+    driver.quit()
+    sys.exit()
 
 # Fill in password
-password_input = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[name="password"]')))
-password_input.send_keys(your_password)
+try:
+    password_input = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'input[name="password"]')))
+    password_input.send_keys(your_password)
+except TimeoutException:
+    print("Cannot locate password input. Try again later.")
+    driver.quit()
+    sys.exit()
 
 # Wait for a random period between 30 and 60 seconds
 time.sleep(random.uniform(5,10))
 
 # Click the login button
-login_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="LoginForm_Login_Button"]')))
-time.sleep(random.uniform(10, 15))
-login_button.click()
+try:
+    login_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="LoginForm_Login_Button"]')))
+    time.sleep(random.uniform(10, 15))
+    login_button.click()
+except TimeoutException:
+    print("Cannot locate login button. Try again later.")
+    driver.quit()
+    sys.exit()
 
 # Wait for the title to change
 time.sleep(random.uniform(60, 90))
-wait.until(EC.title_contains("Twitter"))
+try:
+    wait.until(EC.title_contains("Twitter"))
+except TimeoutException:
+    print("Login process timeout. Try again later.")
+    driver.quit()
+    sys.exit()
 
 # Get the title and print it
 ac_titl = driver.title
@@ -89,7 +123,7 @@ driver.execute_script(f"window.scrollTo(0, {scroll_height // 2});")
 time.sleep(2)
 driver.execute_script("window.scrollTo(0, 0);")
 
-# ... (previous code remains the same)
+
 
 # Search for desired topics
 search_terms = ["NFT", ]
@@ -216,11 +250,11 @@ sentiment = response.choices[0].text.strip()
 print(f"The sentiment of the tweet is {sentiment}.")
 
 if sentiment == "positive":
-    prompt = f"The tweet is positive: \"{tweet_text}\". What would be a suitable response?"
+    prompt = f"The tweet is positive: \"{tweet_text}\". What would be a suitable response? write according to the cotext"
 elif sentiment == "negative":
-    prompt = f"The tweet is negative: \"{tweet_text}\". What would be a suitable response?"
+    prompt = f"The tweet is negative: \"{tweet_text}\". What would be a suitable response? write according to the cotext"
 else:
-    prompt = f"The tweet is neutral: \"{tweet_text}\". What would be a suitable response?"
+    prompt = f"The tweet is neutral: \"{tweet_text}\". What would be a suitable response? write according to the cotext"
 
 response = openai.Completion.create(engine="text-davinci-002", prompt=prompt, max_tokens=60)
 
