@@ -13,6 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
+from tweet_analysis import analyze_and_reply
 
 
 
@@ -240,27 +241,12 @@ except TimeoutException:
 
 # ... (continue with GPT-3 sentiment analysis and replying to the tweet)
 
+reply = analyze_and_reply(tweet_text, "your-openai-api-key")
 
-# Ask GPT-3 to perform sentiment analysis
-prompt = f"Analyze the sentiment of the following tweet: \"{tweet_text}\"."
-response = openai.Completion.create(engine="text-davinci-002", prompt=prompt, max_tokens=60)
 
-# Print the sentiment
-sentiment = response.choices[0].text.strip()
-print(f"The sentiment of the tweet is {sentiment}.")
 
-if sentiment == "positive":
-    prompt = f"The tweet is positive: \"{tweet_text}\". What would be a suitable response? write according to the cotext"
-elif sentiment == "negative":
-    prompt = f"The tweet is negative: \"{tweet_text}\". What would be a suitable response? write according to the cotext"
-else:
-    prompt = f"The tweet is neutral: \"{tweet_text}\". What would be a suitable response? write according to the cotext"
+#....................................
 
-response = openai.Completion.create(engine="text-davinci-002", prompt=prompt, max_tokens=60)
-
-# Print the reply
-reply = response.choices[0].text.strip()
-print(f"Reply: {reply}")
 
 # Locate the 'Reply' button of the tweet
 reply_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@data-testid="reply"]')))
