@@ -24,10 +24,9 @@ your_password = os.getenv("TWITTER_PASSWORD")
 # Setup webdriver
 service = Service("C:\Derivers\chromedriver_win32/chromedriver")
 driver = webdriver.Chrome(service=service)
-driver.get("https://twitter.com")
 
-# Login to twitter
-wait = WebDriverWait(driver, 30)
+
+
 try:
     login_to_twitter(driver, wait, your_email_or_username, your_password)
 except:
