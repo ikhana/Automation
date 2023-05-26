@@ -24,10 +24,10 @@ your_password = os.getenv("TWITTER_PASSWORD")
 # Setup webdriver
 service = Service("C:\Derivers\chromedriver_win32/chromedriver")
 driver = webdriver.Chrome(service=service)
+driver.get("https://twitter.com")
 
-
+# Login to twitter
 wait = WebDriverWait(driver, 30)
-
 try:
     login_to_twitter(driver, wait, your_email_or_username, your_password)
 except:
@@ -60,5 +60,5 @@ while time.time() < end_time:
     
     # Sleep for a random duration in the range 60-70 minutes before the next hour starts
     # Sleep for a random duration in the range 15-20 minutes before the next hour starts
-    time.sleep(random.uniform(15*60, 20*60))
+    time.sleep(random.uniform(5*60, 5*60))
 
