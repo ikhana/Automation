@@ -19,8 +19,7 @@ import random
 def login_to_twitter(driver, wait, your_email_or_username, your_password):
     driver.get("https://twitter.com")
     # Login to twitter
-    wait = WebDriverWait(driver, 30)
-
+    
     # Wait for the page to load
     wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.css-1dbjc4n.r-1habvwh')))
 

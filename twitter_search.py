@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-def twitter_search(driver, search_terms,wait):
+def twitter_search(driver, search_terms, wait):
     # Choose a random search term
     search_term = random.choice(search_terms)
     search_terms.remove(search_term)
@@ -23,6 +23,7 @@ def twitter_search(driver, search_terms,wait):
     people_tab = wait.until(EC.visibility_of_element_located((By.XPATH, '//a[contains(@href, "f=user")]/div/div/span[contains(text(), "People")]')))
     people_tab.click()
     wait.until(EC.visibility_of_all_elements_located((By.XPATH, '//div[@aria-describedby]')))
+    
     # Get a list of all the profile links
     # Get a list of all the elements with 'aria-describedby' attribute
     follow_buttons = driver.find_elements(By.XPATH, '//div[@aria-describedby]')
@@ -40,25 +41,34 @@ def twitter_search(driver, search_terms,wait):
 
     time.sleep(10)
     profile_links = WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a[role="link"][href^="/"][tabindex="-1"]')))
-    time.sleep(10)
-    random_profile = random.choice(profile_links)
-    random_profile.click()
+    wait = WebDriverWait(driver, 30)
+    
+    # Retry to click on a random profile link
+    for _ in range(20):  # Retry up to 10 times
+        try:
+            random_profile = random.choice(profile_links)
+            random_profile.click()
+            break  # If successful, break out of the loop
+        except Exception:
+            time.sleep(2)  # If not, wait for 2 seconds and then try again
+
     time.sleep(10)
     wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[data-testid="primaryColumn"]')))
 
-
     # Wait for the profile page to load
+    time.sleep(15)
 
-    # Wait for the page to load
-    time.sleep(5)
-    time.sleep(10)
+    # Retry to click on the 'Tweets' tab
+    for _ in range(20):  # Retry up to 10 times
+        try:
+            tweets_tab = wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Tweets"]')))
+            tweets_tab.click()
+            break  # If successful, break out of the loop
+        except Exception:
+            time.sleep(2)  # If not, wait for 2 seconds and then try again
 
-    # Click on the 'Tweets' tab
-    wait.until(EC.element_to_be_clickable((By.LINK_TEXT, 'Tweets'))).click()
-
-# Wait for the tweets to load
-    time.sleep(5)
-    time.sleep(10)
+    # Wait for the tweets to load
+    time.sleep(15)
 
     # Retrieve all tweet texts
     tweet_texts = WebDriverWait(driver, 30).until(EC.visibility_of_all_elements_located((By.XPATH, '//div[@data-testid="tweetText"]')))

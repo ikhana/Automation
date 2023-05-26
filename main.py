@@ -26,6 +26,7 @@ service = Service("C:\Derivers\chromedriver_win32/chromedriver")
 driver = webdriver.Chrome(service=service)
 
 
+wait = WebDriverWait(driver, 30)
 
 try:
     login_to_twitter(driver, wait, your_email_or_username, your_password)
