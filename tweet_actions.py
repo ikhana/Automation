@@ -61,13 +61,18 @@ def reply_to_tweet(driver, wait, tweet_text, reply):
         time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
         reply_box.send_keys(reply)
         time.sleep(10)
-    try:
-        wait = WebDriverWait(driver, 10)
-        send_reply_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@data-testid="tweetButton"]')))
-        time.sleep(10)
-        send_reply_button.click()
-        time.sleep(10)
-    except TimeoutException:
-        print("The reply button isn't available or clickable at the moment.")
+        # Retry clicking the reply button
+        for _ in range(20):  # Retry up to 10 times
+            try:
+                wait = WebDriverWait(driver, 10)
+                send_reply_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@data-testid="tweetButton"]')))
+                time.sleep(20)
+                send_reply_button.click()
+                time.sleep(10)
+                break  # If successful, break out of the loop
+            except TimeoutException:
+                print("Retrying to click on the reply button...")
+                time.sleep(2)  # If not, wait for 2 seconds and then try again
 
     time.sleep(random.uniform(10, 15))  # Random pause for human-like behavior
+
