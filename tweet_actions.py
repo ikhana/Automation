@@ -4,6 +4,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import time
 import random
+from selenium.common.exceptions import ElementClickInterceptedException
+
 
 def like_tweet(driver, wait, tweet):
     # Liking a tweet
@@ -13,7 +15,7 @@ def like_tweet(driver, wait, tweet):
         like_button.click()
         print("Tweet liked.")
         time.sleep(random.uniform(5, 10))  # Random pause for human-like behavior
-    except TimeoutException:
+    except (TimeoutException, ElementClickInterceptedException):
         print("The like button isn't available or clickable at the moment.")
 
 def retweet(driver, wait):
@@ -32,47 +34,39 @@ def retweet(driver, wait):
 
         print("Tweet retweeted.")
         time.sleep(random.uniform(5, 10))  # Random pause for human-like behavior
-    except TimeoutException:
+    except (TimeoutException, ElementClickInterceptedException):
         print("The retweet button isn't available or clickable at the moment.")
 
-def reply_to_tweet(driver, wait, tweet_text, reply):
-    # Locate the 'Reply' button of the tweet
-    reply_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@data-testid="reply"]')))
-    time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
-    reply_button.click()
-
-    # Wait for the reply box to appear
-    wait.until(EC.presence_of_element_located((By.XPATH, '//div[@data-testid="tweetTextarea_0RichTextInputContainer"]')))
-    time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
-
+def reply_to_tweet(driver, wait, reply):
+    # Locate the reply box
     reply_box = None
-    # Wait until the reply box is visible
     for _ in range(10):  # Retry up to 10 times
         try:
-            reply_box = wait.until(EC.visibility_of_element_located((By.XPATH, '//div[@role="textbox"]')))
+            reply_box = wait.until(EC.presence_of_element_located((By.XPATH, '//div[@aria-label="Tweet text"]')))
+            reply_box.click()
+            reply_box.send_keys(reply)
+            time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
             break  # If successful, break out of the loop
-        except TimeoutException:
+        except Exception as e:
+            print(f"Retrying to locate and fill the reply box due to {e}...")
             time.sleep(2)  # If not, wait for 2 seconds and then try again
 
     if reply_box is None:
         print("Couldn't find the reply box.")
     else:
-        # Enter the reply text
-        time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
-        reply_box.send_keys(reply)
-        time.sleep(10)
-        # Retry clicking the reply button
-        for _ in range(20):  # Retry up to 10 times
+        # Click on the 'Reply' button
+        for _ in range(10):  # Retry up to 10 times
             try:
-                wait = WebDriverWait(driver, 10)
-                send_reply_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@data-testid="tweetButton"]')))
-                time.sleep(20)
-                send_reply_button.click()
-                time.sleep(10)
+                reply_button = wait.until(EC.presence_of_element_located((By.XPATH, '//div[@data-testid="tweetButtonInline"]')))
+                reply_button.click()
                 break  # If successful, break out of the loop
-            except TimeoutException:
-                print("Retrying to click on the reply button...")
+            except Exception as e:
+                print(f"Retrying to click on the 'Reply' button due to {e}...")
                 time.sleep(2)  # If not, wait for 2 seconds and then try again
 
     time.sleep(random.uniform(10, 15))  # Random pause for human-like behavior
+
+
+
+
 
