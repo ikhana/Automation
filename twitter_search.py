@@ -77,8 +77,10 @@ def twitter_search(driver, search_terms, wait):
     # If any tweets were found, select a random one, print the text and return it
     if len(tweet_texts) > 0:
         random_tweet_text = random.choice(tweet_texts)
+        random_tweet_text.click()
         time.sleep(10)
-        tweet_text = random_tweet_text.text
+        tweet_text_element = wait.until(EC.presence_of_element_located((By.XPATH, '//div[@data-testid="tweetText"]')))
+        tweet_text = tweet_text_element.text
         print(tweet_text)
         return tweet_text
     else:
