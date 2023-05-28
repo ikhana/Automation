@@ -9,33 +9,40 @@ from selenium.common.exceptions import ElementClickInterceptedException
 
 def like_tweet(driver, wait, tweet):
     # Liking a tweet
-    try:
-        like_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="like"]')))
-        time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
-        like_button.click()
-        print("Tweet liked.")
-        time.sleep(random.uniform(5, 10))  # Random pause for human-like behavior
-    except (TimeoutException, ElementClickInterceptedException):
-        print("The like button isn't available or clickable at the moment.")
+    for _ in range(10):  # Retry up to 10 times
+        try:
+            like_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="like"]')))
+            time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
+            like_button.click()
+            print("Tweet liked.")
+            time.sleep(random.uniform(5, 10))  # Random pause for human-like behavior
+            break  # If successful, break out of the loop
+        except (TimeoutException, ElementClickInterceptedException):
+            print("Retrying to click on the like button...")
+            time.sleep(2)  # If not, wait for 2 seconds and then try again
 
 def retweet(driver, wait):
     # Retweeting a tweet
-    try:
-        retweet_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="retweet"]')))
-        time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
-        retweet_button.click()
+    for _ in range(10):  # Retry up to 10 times
+        try:
+            retweet_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-testid="retweet"]')))
+            time.sleep(random.uniform(1, 3))  # Random pause for human-like behavior
+            retweet_button.click()
 
-        # Wait for the pop-up menu to appear
-        wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[data-testid="Dropdown"]')))
+            # Wait for the pop-up menu to appear
+            wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[data-testid="Dropdown"]')))
 
-        # Click on the "Retweet" option
-        retweet_option = wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Retweet"]')))
-        retweet_option.click()
+            # Click on the "Retweet" option
+            retweet_option = wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Retweet"]')))
+            retweet_option.click()
 
-        print("Tweet retweeted.")
-        time.sleep(random.uniform(5, 10))  # Random pause for human-like behavior
-    except (TimeoutException, ElementClickInterceptedException):
-        print("The retweet button isn't available or clickable at the moment.")
+            print("Tweet retweeted.")
+            time.sleep(random.uniform(5, 10))  # Random pause for human-like behavior
+            break  # If successful, break out of the loop
+        except (TimeoutException, ElementClickInterceptedException):
+            print("Retrying to click on the retweet button...")
+            time.sleep(2)  # If not, wait for 2 seconds and then try again
+
 
 def reply_to_tweet(driver, wait, reply):
     # Locate the reply box
