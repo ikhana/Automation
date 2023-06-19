@@ -81,6 +81,7 @@ def twitter_search(driver, search_terms, wait):
         time.sleep(10)
         tweet_text_element = wait.until(EC.presence_of_element_located((By.XPATH, '//div[@data-testid="tweetText"]')))
         tweet_text = tweet_text_element.text
+        print(tweet_text_element)
         print(tweet_text)
         return tweet_text
     else:

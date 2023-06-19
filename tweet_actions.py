@@ -43,7 +43,6 @@ def retweet(driver, wait):
             print("Retrying to click on the retweet button...")
             time.sleep(2)  # If not, wait for 2 seconds and then try again
 
-
 def reply_to_tweet(driver, wait, reply):
     # Locate the reply box
     reply_box = None
