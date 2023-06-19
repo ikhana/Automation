@@ -1,3 +1,4 @@
+
 import openai
 def analyze_and_reply(tweet_text, openai_api_key):
     openai.api_key = openai_api_key
