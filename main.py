@@ -35,7 +35,15 @@ except:
     sys.exit("Failed to login")
 
 # Search terms
-search_terms = ["NFT", "Crypto", "Bitcoin", "Ethereum", "Blockchain", "DeFi", "AI", "ML", "Data Science", "Big Data", "Cloud Computing", "Cybersecurity", "IoT", "AR", "VR", "3D Printing", "Quantum Computing", "Robotics", "Drones", "Autonomous Vehicles", "Wireless Technology", "Edge Computing", "Nanotechnology", "Biotechnology", "Green Energy", "Space Technology", "Smart Cities", "Digital Marketing", "FinTech", "HealthTech", "AgriTech", "Gaming"]
+search_terms = [
+    "NFT", "Crypto", "Bitcoin", "Ethereum", "Blockchain", "DeFi", "Metaverse", 
+    "Utility NFTs", "Hyperledger", "Web3", "Blockchain", 
+    "Play to Earn", "Decentraland", "The Sandbox", "Regenerative Finance", 
+    "Web3 Innovation", "Smart Contracts", "Elon Musk Web3", "DAOs", "CryptoArt", 
+    "CryptoGaming", "Polygon", "Dapp", "Solana", "Staking", "Yield Farming", 
+    "Liquidity Mining", "Interoperability", "Web 3.0", "IPFS", "Oracles", "Crypto Wallets"
+]
+
 
 # Calculate end time as current time + 8 hours
 end_time = time.time() + 8*60*60
@@ -45,15 +53,19 @@ while time.time() < end_time:
     # Loop to run the process for 4 iterations with 15 minutes interval
     for _ in range(4):
         # Sleep for a random duration in the current 15-minute interval
-        time.sleep(random.uniform(_ * 15 * 60, (_ + 1) * 15 * 60))
+        time.sleep(random.uniform(_ * 1 * 60, (_ + 1) * 1* 60))
 
         # Pick a topic, search, like, retweet, and comment on a post
         tweet_text = twitter_search(driver, search_terms, wait)
         if tweet_text is not None:
             reply = analyze_and_reply(tweet_text, openai_api_key)
+           
+            reply_to_tweet(driver, wait,  reply)
+            time.sleep(10)
             like_tweet(driver, wait, tweet_text)
+            time.sleep(10)
             retweet(driver, wait)
-            reply_to_tweet(driver, wait, tweet_text, reply)
+            
 
         # Go back to the home page
         driver.get("https://twitter.com")
