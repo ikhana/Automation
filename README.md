@@ -1,4 +1,4 @@
-g# Twitter Actions Automation
+# Twitter Actions Automation
 
 Twitter Actions Automation is a tool built using Selenium WebDriver and OpenAI's GPT-3 model. It automates the process of searching and retrieving tweets from Twitter, and then it uses GPT-3 to analyze the sentiment of the tweet and generate a reply.
 
