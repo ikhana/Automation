@@ -22,7 +22,7 @@ your_email_or_username = os.getenv("TWITTER_USERNAME")
 your_password = os.getenv("TWITTER_PASSWORD")
 
 # Setup webdriver
-service = Service("C:\Derivers\chromedriver_win32/chromedriver")
+service = Service("C:\Derivers\chromedriver.exe")
 driver = webdriver.Chrome(service=service)
 driver.get("https://twitter.com")
 
